@@ -6,7 +6,7 @@ clearvars;
 % medium properties White Matter
 c0 = 2652;                    %% Maximum medium sound speed
 % source parameters
-source_f0       = 0.5e6;       % source frequency [Hz]
+source_f0       = 0.9e6;       % source frequency [Hz]
 source_roc      = 47.16e-3;    % bowl radius of curvature [m]
 source_diameter = 50e-3;       % bowl aperture diameter [m]
 source_amp      = 0.05e6;      % source pressure [Pa]
@@ -16,7 +16,7 @@ axial_size      = 80e-3;       % total grid size in the axial dimension [m]
 lateral_size    = 60e-3;       % total grid size in the lateral dimension [m]
 
 % computational parameters
-ppw             = 11;          % number of points per wavelength
+ppw             = 6;          % number of points per wavelength
 record_periods  = 1;           % number of periods to record
 cfl             = 0.1;         % CFL number
 source_x_offset = 4;           % grid points to offset the source
