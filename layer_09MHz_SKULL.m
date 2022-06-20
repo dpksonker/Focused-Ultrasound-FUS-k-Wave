@@ -4,22 +4,22 @@ clc
 clearvars;
 
 % medium properties White Matter
-c0 = 2652;       %% Maximum medium sound speed
+c0 = 2652;                    %% Maximum medium sound speed
 % source parameters
-source_f0       = 0.5e6;      % source frequency [Hz]
+source_f0       = 0.5e6;       % source frequency [Hz]
 source_roc      = 47.16e-3;    % bowl radius of curvature [m]
-source_diameter = 50e-3;    % bowl aperture diameter [m]
+source_diameter = 50e-3;       % bowl aperture diameter [m]
 source_amp      = 0.05e6;      % source pressure [Pa]
 
 % grid parameters
-axial_size      = 80e-3;    % total grid size in the axial dimension [m]
-lateral_size    = 60e-3;    % total grid size in the lateral dimension [m]
+axial_size      = 80e-3;       % total grid size in the axial dimension [m]
+lateral_size    = 60e-3;       % total grid size in the lateral dimension [m]
 
 % computational parameters
-ppw             = 11;        % number of points per wavelength
-record_periods  = 1;        % number of periods to record
-cfl             = 0.1;      % CFL number
-source_x_offset = 4;       % grid points to offset the source
+ppw             = 11;          % number of points per wavelength
+record_periods  = 1;           % number of periods to record
+cfl             = 0.1;         % CFL number
+source_x_offset = 4;           % grid points to offset the source
 
 % =========================================================================
 % GRID
@@ -27,7 +27,7 @@ source_x_offset = 4;       % grid points to offset the source
 
 % calculate the grid spacing based on the PPW and F0
 
-dx =   c0/ (ppw * source_f0);   % [m]
+dx =   c0/ (ppw * source_f0);   
 
 % compute the size of the grid
 
@@ -50,7 +50,7 @@ dt = 1 / (PPP * source_f0);
 % create the time array using an integer number of points per period
 
 t_end = sqrt( kgrid.x_size.^2 + kgrid.y_size.^2 + kgrid.z_size.^2 )...
-    / c0;     % total compute time [s] (this must be long enough to reach steady state)
+    / c0;                                                             % total compute time [s] (this must be long enough to reach steady state)
 Nt = round(t_end / dt);
 kgrid.setTime(Nt, dt);
 
@@ -88,41 +88,40 @@ source.p = karray.getDistributedSourceSignal(kgrid, source_sig);
 % define the properties of the propagation medium
 
 medium.sound_speed = 1500* ones(Nx, Ny,Nz); 	% [m/s]
-medium.density = 1000* ones(Nx, Ny,Nz);        % [kg/m^3]
-medium.alpha_coeff = 0.002* ones(Nx, Ny,Nz);  % [dB/(MHz^y cm)]  Power Law Prefactor
-medium.alpha_power = 1.1;    %  Power law exponent
+medium.density = 1000* ones(Nx, Ny,Nz);         % [kg/m^3]
+medium.alpha_coeff = 0.002* ones(Nx, Ny,Nz);    % [dB/(MHz^y cm)]  Power Law Prefactor
+medium.alpha_power = 1.1;                       %  Power law exponent
 
 for ii = 1:Nx
 
     for jj = 1:Ny
 
         for kk = 1:Nz
-
-            %                 rr = ceil(sqrt((Nx/2 - ii)^2 + (Ny/2 - jj)^2) - 20);
+        
             rr = sqrt((ii - (Nx/2))^2 + (jj - (Ny/2))^2 + (kk - (Nz/2+ 26))^2);
 
             if (60 < rr) && (rr <= 66)
-                %                skull
+                %                Scalp
                 medium.sound_speed(ii,jj,kk) = 1537;	% [m/s]
                 medium.density(ii,jj,kk) = 1116;       % [kg/m^3]
                 medium.alpha_coeff(ii,jj,kk) = 0.85;  % [dB/(MHz^y cm)] Power Law Prefactor
 
             elseif (46 < rr) && (rr <= 60)
-                %                skull
+                %                Skull
                 medium.sound_speed(ii,jj,kk) = 2652;	% [m/s]
                 medium.density(ii,jj,kk) = 1796;       % [kg/m^3]
                 medium.alpha_coeff(ii,jj,kk) = 4.11;  % [dB/(MHz^y cm)] Power Law Prefactor
 
-                %                     20 dB
+                %                   
             elseif (40 < rr) && (rr <= 46)
-                %                     average brain
+                %                     CSF
                 medium.sound_speed(ii,jj,kk) = 1500;	% [m/s]
                 medium.density(ii,jj,kk) = 1000;       % [kg/m^3]
                 medium.alpha_coeff(ii,jj,kk) = 0.002;  % [dB/(MHz^y cm)]  Power Law Prefactor
                 % 0.75 is the      % % absorption  coefficient
 
             elseif rr <= 40
-                %                     average brain
+                %                     Brain
                 medium.sound_speed(ii,jj,kk) = 1500;	% [m/s]
                 medium.density(ii,jj,kk) = 1000;       % [kg/m^3]
                 medium.alpha_coeff(ii,jj,kk) = 0.10;  % [dB/(MHz^y cm)]  Power Law Prefactor
